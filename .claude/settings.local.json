@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install *)",
+      "Bash(brew link *)",
+      "Bash(lsof -i :8081 -sTCP:LISTEN)",
+      "Bash(ipconfig getifaddr *)",
+      "Bash(npx expo *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"expo-platform: ios\" \"http://10.113.224.55:8081/\")",
+      "Bash(npx --yes qrcode \"exp://10.113.224.55:8081\" -o /private/tmp/claude-501/-Users-peixixuan-Desktop-mamaProject-TMD-app/8d22970b-05af-4c88-bf87-2f84dd91db5f/scratchpad/expo-qr.png -w 600)",
+      "Bash(npx --yes qrcode \"exp://10.113.224.55:8081\" -t svg)",
+      "Bash(node -e \"const QR=require\\('qrcode'\\); QR.toString\\('exp://10.113.224.55:8081',{type:'svg',margin:1,width:520},\\(e,s\\)=>{if\\(e\\){console.error\\(e\\);process.exit\\(1\\)} process.stdout.write\\(s\\)}\\)\")",
+      "Bash(node -e \"const QR=require\\('qrcode'\\); QR.toString\\('exp://10.113.224.55:8081',{type:'svg',margin:1,width:520},\\(e,s\\)=>{if\\(e\\)process.exit\\(1\\); process.stdout.write\\(String\\(s.length\\)\\)}\\)\")",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "Bash(npm view *)",
+      "Bash(npm install *)"
+    ]
+  }
+}
