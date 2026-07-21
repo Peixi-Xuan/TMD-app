@@ -2,7 +2,7 @@
 
 A mobile clinical decision support tool for pediatric and adolescent temporomandibular disorders (TMD), built with Expo and React Native.
 
-> This app distills 30+ years of clinical expertise from West China Hospital of Stomatology into a structured, accessible tool for dentists and dental learners.
+> My mom has spent 30+ years as a TMJ specialist at West China Hospital of Stomatology. This app is my way of turning her clinical expertise into something tangible: a structured decision support tool for dentists, built as part of her patent application journey.
 
 ---
 
