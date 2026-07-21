@@ -8,10 +8,10 @@ A mobile clinical decision support tool for pediatric and adolescent temporomand
 
 ## Screenshots
 
-<img width="220" height="478" alt="IMG_8557" src="https://github.com/user-attachments/assets/011eeb09-a5b3-4b43-980f-ba017ec6476d" />
-<img width="220" height="478" alt="IMG_8558" src="https://github.com/user-attachments/assets/969769e0-62f0-4546-8614-5a0a2af40010" />
-<img width="220" height="478" alt="IMG_8559" src="https://github.com/user-attachments/assets/35e7563d-97de-470b-ba2f-b1ae694d5835" />
-<img width="220" height="478" alt="IMG_8560" src="https://github.com/user-attachments/assets/23f037c9-0eb2-4f92-9ca6-13ac623b7c21" />
+<img width="110" height="239" alt="IMG_8557" src="https://github.com/user-attachments/assets/011eeb09-a5b3-4b43-980f-ba017ec6476d" />
+<img width="110" height="239" alt="IMG_8558" src="https://github.com/user-attachments/assets/969769e0-62f0-4546-8614-5a0a2af40010" />
+<img width="110" height="239" alt="IMG_8559" src="https://github.com/user-attachments/assets/35e7563d-97de-470b-ba2f-b1ae694d5835" />
+<img width="110" height="239" alt="IMG_8560" src="https://github.com/user-attachments/assets/23f037c9-0eb2-4f92-9ca6-13ac623b7c21" />
 
 ---
 
