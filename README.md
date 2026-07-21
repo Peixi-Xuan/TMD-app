@@ -1,4 +1,4 @@
-# TMD智策 · TMD Clinical Decision App
+# TMD Clinical Decision App (TMD智策)
 
 A mobile clinical decision support tool for pediatric and adolescent temporomandibular disorders (TMD), built with Expo and React Native.
 
