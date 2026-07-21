@@ -8,15 +8,17 @@ import { Entry } from '../lib/dictionary';
 export default function EntryListItem({
   entry,
   compact = false,
+  onPress,
 }: {
   entry: Entry;
   compact?: boolean;
+  onPress?: () => void;
 }) {
   const router = useRouter();
   return (
     <Pressable
       testID={`entry-row-${entry.id}`}
-      onPress={() => router.push(`/dictionary/${entry.id}`)}
+      onPress={onPress ?? (() => router.push(`/dictionary/${entry.id}`))}
       style={({ pressed }) => [
         styles.row,
         compact && styles.rowCompact,
@@ -60,18 +62,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cardMuted,
   },
   badge: {
-    width: 30,
+    minWidth: 30,
     height: 30,
     borderRadius: radius.sm,
     backgroundColor: colors.primarySoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
+    paddingHorizontal: spacing.xs,
   },
   badgeCompact: {
-    width: 26,
+    minWidth: 26,
     height: 26,
     backgroundColor: 'transparent',
+    paddingHorizontal: spacing.xs,
   },
   badgeText: {
     ...typography.caption,

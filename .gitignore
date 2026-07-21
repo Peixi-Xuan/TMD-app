@@ -6,3 +6,15 @@ node_modules/
 .DS_Store
 .swc
 *.local
+
+# Dev tooling — not for public distribution
+.claude/
+.expo/
+
+# Reference assets — not for public distribution
+reference/
+
+# Proprietary clinical content — not for public distribution
+content/
+assets/figures/
+app/(tabs)/treatment/session.tsx

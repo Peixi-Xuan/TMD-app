@@ -4,8 +4,9 @@ import { FlatList, Platform, Pressable, StyleSheet, Text, TextInput, View } from
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ChapterCard from '../../../components/ChapterCard';
 import EntryListItem from '../../../components/EntryListItem';
+import { TAB_BAR_CLEARANCE } from '../../../components/FloatingTabBar';
 import { colors, radius, spacing, typography } from '../../../constants/theme';
-import { entries, getTopLevel, searchEntries } from '../../../lib/dictionary';
+import { getTopLevel, searchEntries } from '../../../lib/dictionary';
 
 export default function DictionaryHome() {
   const insets = useSafeAreaInsets();
@@ -22,8 +23,8 @@ export default function DictionaryHome() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.brand}>TMD 智策</Text>
-        <Text style={styles.brandSub}>儿童及青少年颞下颌关节紊乱病 · 学习词典</Text>
+        <Text style={styles.brand}>临床知识辅助辞典</Text>
+        <Text style={styles.brandSub}>儿童及青少年颞下颌关节紊乱病诊疗知识库</Text>
 
         <View style={styles.searchBar}>
           <Ionicons name="search" size={18} color={colors.textTertiary} />
@@ -49,7 +50,7 @@ export default function DictionaryHome() {
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + TAB_BAR_CLEARANCE }]}
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
             <Text style={styles.resultsLabel}>
@@ -72,19 +73,7 @@ export default function DictionaryHome() {
         <FlatList
           data={topLevel}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          ListHeaderComponent={
-            <View style={styles.statsRow}>
-              <View style={styles.statPill}>
-                <Text style={styles.statNumber}>{entries.length}</Text>
-                <Text style={styles.statLabel}>词条</Text>
-              </View>
-              <View style={styles.statPill}>
-                <Text style={styles.statNumber}>{topLevel.length}</Text>
-                <Text style={styles.statLabel}>章节</Text>
-              </View>
-            </View>
-          }
+          contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + TAB_BAR_CLEARANCE }]}
           renderItem={({ item }) => <ChapterCard entry={item} />}
         />
       )}
@@ -132,29 +121,6 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxl,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  statPill: {
-    backgroundColor: colors.primarySoft,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 6,
-  },
-  statNumber: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.primaryDark,
-  },
-  statLabel: {
-    fontSize: 12.5,
-    color: colors.primary,
   },
   resultsLabel: {
     fontSize: 13,

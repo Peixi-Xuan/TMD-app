@@ -1,13 +1,36 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BodyText from '../../../components/BodyText';
 import Chip from '../../../components/Chip';
 import EntryListItem from '../../../components/EntryListItem';
+import FigureView from '../../../components/FigureView';
+import { TAB_BAR_CLEARANCE } from '../../../components/FloatingTabBar';
 import { colors, radius, shadowCard, spacing, typography } from '../../../constants/theme';
-import { getChildren, getEntry } from '../../../lib/dictionary';
+import { Entry, getBackRefs, getChildren, getEntry } from '../../../lib/dictionary';
+import { FONT_LEVELS, useFontScale } from '../../../lib/fontScale';
+
+const ENTRY_ICON: Record<string, React.ComponentProps<typeof Ionicons>['name']> = {
+  'tmd-concept':              'people-outline',
+  'icr-concept':              'git-branch-outline',
+  'tmd-icr-harm':             'warning-outline',
+  'tmd-etiology':             'search-outline',
+  'tmd-clinical':             'clipboard-outline',
+  'tmd-imaging':              'scan-outline',
+  'tmd-treatment-principles': 'navigate-outline',
+  'tmd-treatment-methods':    'heart-outline',
+};
+function entryIcon(id: string): React.ComponentProps<typeof Ionicons>['name'] {
+  return ENTRY_ICON[id] ?? 'document-text-outline';
+}
+
+function buildShareText(entry: Entry): string {
+  const titleLine = [entry.title_zh, entry.title_en, entry.abbr].filter(Boolean).join(' · ');
+  const body = entry.body_md.replace(/\*\*/g, '');
+  return `【${titleLine}】\n\n${body}\n\n—— 来自 儿童及青少年TMD智慧决策 · 知识辞典`;
+}
 
 export default function EntryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,7 +48,18 @@ export default function EntryDetail() {
 
   const parent = entry.parent ? getEntry(entry.parent) : undefined;
   const children = getChildren(entry.id);
+  const backRefs = getBackRefs(entry.id).filter((e) => !entry.cross_refs?.includes(e.id));
   const needsSupplement = entry.content_status === 'needs_supplement';
+  const { level, scale, setLevel } = useFontScale();
+
+  const cycleFontLevel = () => {
+    const next = FONT_LEVELS[(FONT_LEVELS.indexOf(level) + 1) % FONT_LEVELS.length];
+    setLevel(next);
+  };
+
+  const onShare = () => {
+    Share.share({ message: buildShareText(entry) }).catch(() => {});
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -39,7 +73,16 @@ export default function EntryDetail() {
           <Ionicons name="chevron-back" size={22} color={colors.primaryDark} />
           <Text style={styles.backLabel}>返回</Text>
         </Pressable>
-        <Ionicons name="medical-outline" size={20} color={colors.primary} />
+        <View style={styles.topBarActions}>
+          <Pressable onPress={cycleFontLevel} hitSlop={10} style={styles.actionButton}>
+            <Text style={styles.fontLevelLabel}>
+              {level === 'small' ? 'A-' : level === 'large' ? 'A+' : 'A'}
+            </Text>
+          </Pressable>
+          <Pressable onPress={onShare} hitSlop={10} style={styles.actionButton}>
+            <Ionicons name="share-outline" size={20} color={colors.primaryDark} />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -83,7 +126,7 @@ export default function EntryDetail() {
 
         {entry.body_md ? (
           <View style={styles.bodyCard}>
-            <BodyText text={entry.body_md} />
+            <BodyText text={entry.body_md} fontScale={scale} />
           </View>
         ) : (
           <View style={styles.categoryNote}>
@@ -96,13 +139,7 @@ export default function EntryDetail() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>相关图示</Text>
             {entry.figures.map((fig, idx) => (
-              <View key={idx} style={styles.figureCard}>
-                <View style={styles.figurePlaceholder}>
-                  <Ionicons name="image-outline" size={26} color={colors.textTertiary} />
-                  <Text style={styles.figurePlaceholderText}>图像素材建设中</Text>
-                </View>
-                <Text style={styles.figureCaption}>{fig.caption}</Text>
-              </View>
+              <FigureView key={idx} figure={fig} />
             ))}
           </View>
         )}
@@ -145,7 +182,23 @@ export default function EntryDetail() {
           </View>
         )}
 
-        <View style={{ height: spacing.xxl }} />
+        {backRefs.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>被以下词条引用</Text>
+            <View style={styles.chipsWrap}>
+              {backRefs.map((ref) => (
+                <Chip
+                  key={ref.id}
+                  testID={`back-ref-${ref.id}`}
+                  label={ref.title_zh}
+                  onPress={() => router.push(`/dictionary/${ref.id}`)}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        <View style={{ height: insets.bottom + TAB_BAR_CLEARANCE }} />
       </ScrollView>
     </View>
   );
@@ -294,28 +347,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  figureCard: {
-    marginBottom: spacing.md,
+  crossRefScroll: {
+    marginHorizontal: -spacing.xl,
   },
-  figurePlaceholder: {
-    height: 140,
+  crossRefScrollContent: {
+    paddingHorizontal: spacing.xl,
+    gap: spacing.sm,
+  },
+  crossRefCard: {
+    width: 86,
+    backgroundColor: colors.card,
     borderRadius: radius.md,
-    backgroundColor: colors.cardMuted,
     borderWidth: 1,
     borderColor: colors.border,
-    borderStyle: 'dashed',
+    padding: spacing.md,
+    alignItems: 'center',
+    gap: spacing.sm,
+    ...shadowCard,
+  },
+  crossRefIconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.sm,
+    backgroundColor: colors.primarySoft,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.xs,
   },
-  figurePlaceholderText: {
-    fontSize: 12.5,
-    color: colors.textTertiary,
+  crossRefTitle: {
+    fontSize: 11.5,
+    color: colors.textPrimary,
+    textAlign: 'center',
+    lineHeight: 16,
+    fontWeight: '500',
   },
-  figureCaption: {
-    fontSize: 12.5,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
-    lineHeight: 18,
+  topBarActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.lg,
+  },
+  actionButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 28,
+  },
+  fontLevelLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.primaryDark,
   },
 });

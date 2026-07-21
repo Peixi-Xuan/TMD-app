@@ -45,6 +45,10 @@ export function countDescendants(id: string): number {
   return children.reduce((sum, c) => sum + 1 + countDescendants(c.id), 0);
 }
 
+export function getBackRefs(id: string): Entry[] {
+  return entries.filter((e) => e.id !== id && e.cross_refs?.includes(id));
+}
+
 function haystack(e: Entry): string {
   return [e.title_zh, e.title_en, e.abbr, ...(e.aliases || []), e.body_md]
     .filter(Boolean)
